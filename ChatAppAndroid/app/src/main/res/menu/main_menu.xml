@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/signout"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:title="Sign Out"
+        android:visible="true" />
+</menu>
