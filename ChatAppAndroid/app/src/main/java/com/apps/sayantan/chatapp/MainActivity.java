@@ -1,10 +1,7 @@
 package com.apps.sayantan.chatapp;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -12,9 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -91,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
-        remoteConfig=FirebaseRemoteConfig.getInstance();
+        remoteConfig = FirebaseRemoteConfig.getInstance();
 
         dbRef = database.getReference().child("messages");        //refer to rootnode.childnode
         stRef = storage.getReference().child("chat_photos");
@@ -149,27 +144,27 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        FirebaseRemoteConfigSettings configSettings=new FirebaseRemoteConfigSettings.Builder()
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setDeveloperModeEnabled(BuildConfig.DEBUG)
                 .build();
         remoteConfig.setConfigSettings(configSettings);
-        Map<String,Object> configMap=new HashMap<>();
-        configMap.put("msg_len",1000);
+        Map<String, Object> configMap = new HashMap<>();
+        configMap.put("msg_len", 1000);
         remoteConfig.setDefaults(configMap);
         fetchConfig();
     }
 
     private void fetchConfig() {
-        long cacheExpiration=3600;
-        if(remoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()){
-            cacheExpiration=0;
+        long cacheExpiration = 3600;
+        if (remoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+            cacheExpiration = 0;
         }
         remoteConfig.fetch(cacheExpiration)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         remoteConfig.activateFetched();
-                        Long len=remoteConfig.getLong("str_len");
+                        Long len = remoteConfig.getLong("str_len");
                         messageEdit.setFilters(new InputFilter[]{
                                 new InputFilter.LengthFilter(len.intValue())
                         });
@@ -276,10 +271,10 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Image URI is null", Toast.LENGTH_SHORT).show();
             }
             if (imRef != null) {
-                imRef.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                imRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri download = taskSnapshot.getDownloadUrl();
+                        Uri download = taskSnapshot.getUploadSessionUri();
                         if (download != null) {
                             dbRef.push().setValue(new ItemDataModel(null, username, download.toString()));
                         } else {
